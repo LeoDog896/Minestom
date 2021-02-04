@@ -7,7 +7,6 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventCallback;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.utils.validate.Check;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

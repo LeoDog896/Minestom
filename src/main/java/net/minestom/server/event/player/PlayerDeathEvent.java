@@ -1,6 +1,5 @@
 package net.minestom.server.event.player;
 
-import net.minestom.server.chat.ColoredText;
 import net.minestom.server.chat.JsonMessage;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.PlayerEvent;

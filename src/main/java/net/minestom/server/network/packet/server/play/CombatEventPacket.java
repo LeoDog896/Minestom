@@ -8,8 +8,6 @@ import net.minestom.server.network.packet.server.ServerPacketIdentifier;
 import net.minestom.server.utils.binary.BinaryWriter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 /**
  * Packet sent during combat to a {@link Player}.
  * Only death is supported for the moment (other events are ignored anyway as of 1.15.2)

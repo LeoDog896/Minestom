@@ -1,6 +1,5 @@
 package net.minestom.server.item.metadata;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.utils.Utils;
