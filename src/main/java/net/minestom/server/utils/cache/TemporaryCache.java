@@ -19,9 +19,9 @@ public class TemporaryCache<T> {
     public static final ScheduledExecutorService REMOVER_SERVICE = Executors.newScheduledThreadPool(1);
 
     // Identifier = Cached object
-    protected ConcurrentHashMap<UUID, T> cache = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<UUID, T> cache = new ConcurrentHashMap<>();
     // Identifier = time
-    protected ConcurrentHashMap<UUID, Long> cacheTime = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<UUID, Long> cacheTime = new ConcurrentHashMap<>();
 
     private final long keepTime;
 

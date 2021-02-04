@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SetCompressionPacket implements ServerPacket {
 
-    public int threshold;
+    public final int threshold;
 
     public SetCompressionPacket(int threshold) {
         this.threshold = threshold;

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PongPacket implements ServerPacket {
 
-    public long number;
+    public final long number;
 
     public PongPacket(long number) {
         this.number = number;

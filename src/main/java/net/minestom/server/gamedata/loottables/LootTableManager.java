@@ -16,12 +16,12 @@ import java.io.*;
  */
 public final class LootTableManager {
 
-    private NamespaceIDHashMap<JsonDeserializer<? extends Condition>> conditionDeserializers = new NamespaceIDHashMap<>();
-    private NamespaceIDHashMap<LootTableType> tableTypes = new NamespaceIDHashMap<>();
-    private NamespaceIDHashMap<LootTableEntryType> entryTypes = new NamespaceIDHashMap<>();
-    private NamespaceIDHashMap<LootTableFunction> functions = new NamespaceIDHashMap<>();
-    private NamespaceIDHashMap<LootTable> cache = new NamespaceIDHashMap<>();
-    private Gson gson;
+    private final NamespaceIDHashMap<JsonDeserializer<? extends Condition>> conditionDeserializers = new NamespaceIDHashMap<>();
+    private final NamespaceIDHashMap<LootTableType> tableTypes = new NamespaceIDHashMap<>();
+    private final NamespaceIDHashMap<LootTableEntryType> entryTypes = new NamespaceIDHashMap<>();
+    private final NamespaceIDHashMap<LootTableFunction> functions = new NamespaceIDHashMap<>();
+    private final NamespaceIDHashMap<LootTable> cache = new NamespaceIDHashMap<>();
+    private final Gson gson;
 
     public LootTableManager() {
         gson = new GsonBuilder()

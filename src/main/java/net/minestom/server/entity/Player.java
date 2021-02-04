@@ -137,7 +137,7 @@ public class Player extends LivingEntity implements CommandSender {
     private float exp;
     private int level;
 
-    protected PlayerInventory inventory;
+    protected final PlayerInventory inventory;
     private Inventory openInventory;
     // Used internally to allow the closing of inventory within the inventory listener
     private boolean didCloseInventory;
@@ -170,7 +170,7 @@ public class Player extends LivingEntity implements CommandSender {
     private float lastPlayerSyncYaw, lastPlayerSyncPitch;
 
     // Experience orb pickup
-    protected UpdateOption experiencePickupCooldown = new UpdateOption(10, TimeUnit.TICK);
+    protected final UpdateOption experiencePickupCooldown = new UpdateOption(10, TimeUnit.TICK);
     private long lastExperiencePickupCheckTime;
 
     private BelowNameTag belowNameTag;

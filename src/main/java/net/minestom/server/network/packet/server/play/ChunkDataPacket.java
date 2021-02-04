@@ -46,8 +46,8 @@ public class ChunkDataPacket implements ServerPacket, CacheablePacket {
     private static final int MAX_BUFFER_SIZE = (Short.BYTES + Byte.BYTES + 5 * Byte.BYTES + (4096 * MAX_BITS_PER_ENTRY / Long.SIZE * Long.BYTES)) * CHUNK_SECTION_COUNT + 256 * Integer.BYTES;
 
     // Cacheable data
-    private UUID identifier;
-    private long lastUpdate;
+    private final UUID identifier;
+    private final long lastUpdate;
 
     public ChunkDataPacket(@Nullable UUID identifier, long lastUpdate) {
         this.identifier = identifier;

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class KeepAlivePacket implements ServerPacket {
 
-    public long id;
+    public final long id;
 
     public KeepAlivePacket(long id) {
         this.id = id;

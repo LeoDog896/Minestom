@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class PlayerInfoPacket implements ServerPacket {
 
-    public Action action;
-    public List<PlayerInfo> playerInfos;
+    public final Action action;
+    public final List<PlayerInfo> playerInfos;
 
     public PlayerInfoPacket(Action action) {
         this.action = action;
@@ -60,7 +60,7 @@ public class PlayerInfoPacket implements ServerPacket {
 
     public static abstract class PlayerInfo {
 
-        public UUID uuid;
+        public final UUID uuid;
 
         public PlayerInfo(UUID uuid) {
             this.uuid = uuid;
@@ -71,10 +71,10 @@ public class PlayerInfoPacket implements ServerPacket {
 
     public static class AddPlayer extends PlayerInfo {
 
-        public String name;
-        public List<Property> properties;
-        public GameMode gameMode;
-        public int ping;
+        public final String name;
+        public final List<Property> properties;
+        public final GameMode gameMode;
+        public final int ping;
         public JsonMessage displayName; // Only text
 
         public AddPlayer(UUID uuid, String name, GameMode gameMode, int ping) {
@@ -103,9 +103,9 @@ public class PlayerInfoPacket implements ServerPacket {
 
         public static class Property {
 
-            public String name;
-            public String value;
-            public String signature;
+            public final String name;
+            public final String value;
+            public final String signature;
 
             public Property(String name, String value, String signature) {
                 this.name = name;
@@ -131,7 +131,7 @@ public class PlayerInfoPacket implements ServerPacket {
 
     public static class UpdateGamemode extends PlayerInfo {
 
-        public GameMode gameMode;
+        public final GameMode gameMode;
 
         public UpdateGamemode(UUID uuid, GameMode gameMode) {
             super(uuid);
@@ -146,7 +146,7 @@ public class PlayerInfoPacket implements ServerPacket {
 
     public static class UpdateLatency extends PlayerInfo {
 
-        public int ping;
+        public final int ping;
 
         public UpdateLatency(UUID uuid, int ping) {
             super(uuid);
@@ -161,7 +161,7 @@ public class PlayerInfoPacket implements ServerPacket {
 
     public static class UpdateDisplayName extends PlayerInfo {
 
-        public JsonMessage displayName; // Only text
+        public final JsonMessage displayName; // Only text
 
         public UpdateDisplayName(UUID uuid, JsonMessage displayName) {
             super(uuid);

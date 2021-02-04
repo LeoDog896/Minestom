@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EncryptionRequestPacket implements ServerPacket {
 
     public byte[] publicKey;
-    public byte[] nonce = new byte[4];
+    public final byte[] nonce = new byte[4];
 
     public EncryptionRequestPacket(NettyPlayerConnection connection) {
         ThreadLocalRandom.current().nextBytes(nonce);

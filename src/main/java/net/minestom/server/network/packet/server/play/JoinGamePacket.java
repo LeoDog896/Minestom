@@ -18,8 +18,8 @@ public class JoinGamePacket implements ServerPacket {
     public int maxPlayers = 0; // Unused
     public int viewDistance;
     public boolean reducedDebugInfo = false;
-    public boolean enableRespawnScreen = true;
-    public boolean isDebug = false;
+    public final boolean enableRespawnScreen = true;
+    public final boolean isDebug = false;
     public boolean isFlat = false;
 
     @Override

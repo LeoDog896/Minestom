@@ -378,7 +378,8 @@ public class Sidebar implements Scoreboard {
     private static class SidebarTeam {
 
         private final String teamName;
-        private JsonMessage prefix, suffix;
+        private JsonMessage prefix;
+        private final JsonMessage suffix;
         private final String entityName;
 
         private final JsonMessage teamDisplayName = ColoredText.of("displaynametest");

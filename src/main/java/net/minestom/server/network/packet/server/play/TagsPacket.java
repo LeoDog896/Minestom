@@ -16,10 +16,10 @@ import java.util.function.Function;
 
 public class TagsPacket implements ServerPacket {
 
-    public List<Tag> blockTags = new LinkedList<>();
-    public List<Tag> itemTags = new LinkedList<>();
-    public List<Tag> fluidTags = new LinkedList<>();
-    public List<Tag> entityTags = new LinkedList<>();
+    public final List<Tag> blockTags = new LinkedList<>();
+    public final List<Tag> itemTags = new LinkedList<>();
+    public final List<Tag> fluidTags = new LinkedList<>();
+    public final List<Tag> entityTags = new LinkedList<>();
 
     private static final TagsPacket REQUIRED_TAGS_PACKET = new TagsPacket();
 

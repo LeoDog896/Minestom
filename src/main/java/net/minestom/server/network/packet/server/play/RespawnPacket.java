@@ -12,9 +12,9 @@ public class RespawnPacket implements ServerPacket {
     public DimensionType dimensionType;
     public long hashedSeed;
     public GameMode gameMode;
-    public boolean isDebug = false;
+    public final boolean isDebug = false;
     public boolean isFlat = true;
-    public boolean copyMeta = true;
+    public final boolean copyMeta = true;
 
     @Override
     public void write(@NotNull BinaryWriter writer) {

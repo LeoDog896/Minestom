@@ -25,7 +25,7 @@ public class WorldBorder {
     private long lerpStartTime;
 
     private long speed;
-    private int portalTeleportBoundary;
+    private final int portalTeleportBoundary;
     private int warningTime;
     private int warningBlocks;
 

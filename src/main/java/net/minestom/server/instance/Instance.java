@@ -88,7 +88,7 @@ public abstract class Instance implements BlockModifier, EventHandler, DataConta
     protected final Set<ExperienceOrb> experienceOrbs = new CopyOnWriteArraySet<>();
     // Entities per chunk
     protected final Long2ObjectMap<Set<Entity>> chunkEntities = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
-    private Object entitiesLock = new Object(); // Lock used to prevent the entities Set and Map to be subject to race condition
+    private final Object entitiesLock = new Object(); // Lock used to prevent the entities Set and Map to be subject to race condition
 
     // the uuid of this instance
     protected UUID uniqueId;

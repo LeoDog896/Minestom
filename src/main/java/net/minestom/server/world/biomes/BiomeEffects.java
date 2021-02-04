@@ -123,7 +123,7 @@ public class BiomeEffects {
     public enum GrassColorModifier {
         NONE("none"), DARK_FOREST("dark_forest"), SWAMP("swamp");
 
-        String type;
+        final String type;
 
         GrassColorModifier(String type) {
             this.type = type;

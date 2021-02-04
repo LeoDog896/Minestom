@@ -91,7 +91,7 @@ public abstract class Entity implements Viewable, EventHandler, DataContainer, P
     protected Entity vehicle;
 
     // Velocity
-    protected Vector velocity = new Vector(); // Movement in block per second
+    protected final Vector velocity = new Vector(); // Movement in block per second
 
     protected double gravityDragPerTick;
     protected double gravityAcceleration;
@@ -121,7 +121,7 @@ public abstract class Entity implements Viewable, EventHandler, DataContainer, P
     // Events
     private final Map<Class<? extends Event>, Collection<EventCallback>> eventCallbacks = new ConcurrentHashMap<>();
 
-    protected Metadata metadata = new Metadata(this);
+    protected final Metadata metadata = new Metadata(this);
 
     private final List<TimedPotion> effects = new CopyOnWriteArrayList<>();
 

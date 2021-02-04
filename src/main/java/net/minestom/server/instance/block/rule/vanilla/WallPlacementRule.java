@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class WallPlacementRule extends BlockPlacementRule {
 
-    Block block;
+    final Block block;
 
     public WallPlacementRule(Block block) {
         super(block);

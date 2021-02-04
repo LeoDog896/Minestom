@@ -123,7 +123,7 @@ public class Biome {
     public enum Precipitation {
         RAIN("rain"), NONE("none"), SNOW("snow");
 
-        String type;
+        final String type;
 
         Precipitation(String type) {
             this.type = type;
@@ -139,7 +139,7 @@ public class Biome {
         SAVANNA("savanna"), ICY("icy"), THE_END("the_end"), BEACH("beach"), FOREST("forest"), OCEAN("ocean"),
         DESERT("desert"), RIVER("river"), SWAMP("swamp"), MUSHROOM("mushroom"), NETHER("nether");
 
-        String type;
+        final String type;
 
         Category(String type) {
             this.type = type;
@@ -153,7 +153,7 @@ public class Biome {
     public enum TemperatureModifier {
         NONE("none"), FROZEN("frozen");
 
-        String type;
+        final String type;
 
         TemperatureModifier(String type) {
             this.type = type;

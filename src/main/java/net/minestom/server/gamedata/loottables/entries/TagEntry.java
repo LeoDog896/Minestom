@@ -16,7 +16,7 @@ import java.util.Set;
 public class TagEntry extends LootTable.Entry {
     private final Tag tag;
     private final boolean expand;
-    private Random rng = new Random();
+    private final Random rng = new Random();
 
     TagEntry(TagType type, Tag tag, boolean expand, int weight, int quality, List<Condition> conditions) {
         super(type, weight, quality, conditions);

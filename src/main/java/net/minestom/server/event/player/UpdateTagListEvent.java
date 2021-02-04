@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class UpdateTagListEvent extends Event {
 
-    private TagsPacket packet;
+    private final TagsPacket packet;
 
     public UpdateTagListEvent(@NotNull TagsPacket packet) {
         this.packet = packet;

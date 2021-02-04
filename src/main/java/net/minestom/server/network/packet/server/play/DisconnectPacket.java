@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DisconnectPacket implements ServerPacket {
 
-    public JsonMessage message; // Only text
+    public final JsonMessage message; // Only text
 
     public DisconnectPacket(@NotNull JsonMessage message){
         this.message = message;

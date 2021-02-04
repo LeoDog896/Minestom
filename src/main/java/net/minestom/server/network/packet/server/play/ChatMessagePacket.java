@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public class ChatMessagePacket implements ServerPacket {
 
-    public String jsonMessage;
-    public Position position;
-    public UUID uuid;
+    public final String jsonMessage;
+    public final Position position;
+    public final UUID uuid;
 
     public ChatMessagePacket(String jsonMessage, Position position, UUID uuid) {
         this.jsonMessage = jsonMessage;

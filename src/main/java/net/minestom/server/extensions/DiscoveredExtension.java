@@ -23,7 +23,7 @@ final class DiscoveredExtension {
     private String[] codeModifiers;
     private String[] dependencies;
     private ExternalDependencies externalDependencies;
-    transient List<URL> files = new LinkedList<>();
+    final transient List<URL> files = new LinkedList<>();
     transient LoadStatus loadStatus = LoadStatus.LOAD_SUCCESS;
     transient private File originalJar;
 
@@ -160,12 +160,12 @@ final class DiscoveredExtension {
     }
 
     static final class ExternalDependencies {
-        Repository[] repositories = new Repository[0];
-        String[] artifacts = new String[0];
+        final Repository[] repositories = new Repository[0];
+        final String[] artifacts = new String[0];
 
         static class Repository {
-            String name = "";
-            String url = "";
+            final String name = "";
+            final String url = "";
         }
     }
 }

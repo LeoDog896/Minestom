@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class PrimitiveConversion {
 
-    private static Map<Class, Class> primitiveToBoxedTypeMap = new HashMap<>();
+    private static final Map<Class, Class> primitiveToBoxedTypeMap = new HashMap<>();
 
     static {
         // Primitive

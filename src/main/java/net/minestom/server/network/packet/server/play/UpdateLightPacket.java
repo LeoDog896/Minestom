@@ -18,7 +18,7 @@ public class UpdateLightPacket implements ServerPacket, CacheablePacket {
     public int chunkX;
     public int chunkZ;
     //todo make changeable
-    public boolean trustEdges = true;
+    public final boolean trustEdges = true;
 
     public int skyLightMask;
     public int blockLightMask;
@@ -30,8 +30,8 @@ public class UpdateLightPacket implements ServerPacket, CacheablePacket {
     public List<byte[]> blockLight;
 
     // Cacheable data
-    private UUID identifier;
-    private long lastUpdate;
+    private final UUID identifier;
+    private final long lastUpdate;
 
     public UpdateLightPacket(@Nullable UUID identifier, long lastUpdate) {
         this.identifier = identifier;

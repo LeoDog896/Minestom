@@ -14,7 +14,7 @@ import java.util.Random;
  * Requires 'explosionPower' double argument
  */
 public class SurvivesExplosionCondition implements Condition {
-    private Random rng = new Random();
+    private final Random rng = new Random();
 
     @Override
     public boolean test(Data data) {

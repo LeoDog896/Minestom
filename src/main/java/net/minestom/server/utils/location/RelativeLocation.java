@@ -11,8 +11,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class RelativeLocation<T> {
 
-    protected T location;
-    protected boolean relativeX, relativeY, relativeZ;
+    protected final T location;
+    protected final boolean relativeX;
+    protected final boolean relativeY;
+    protected final boolean relativeZ;
 
     public RelativeLocation(@NotNull T location, boolean relativeX, boolean relativeY, boolean relativeZ) {
         this.location = location;

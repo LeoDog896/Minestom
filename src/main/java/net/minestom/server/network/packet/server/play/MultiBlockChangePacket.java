@@ -13,7 +13,7 @@ public class MultiBlockChangePacket implements ServerPacket {
     public int chunkZ;
     public int section;
     //TODO this is important prob if we add a light api
-    public boolean suppressLightUpdates = true;
+    public final boolean suppressLightUpdates = true;
     public BlockChange[] blockChanges;
 
     @Override

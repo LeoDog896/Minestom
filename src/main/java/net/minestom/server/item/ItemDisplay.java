@@ -4,8 +4,8 @@ import net.minestom.server.chat.JsonMessage;
 
 public class ItemDisplay {
 
-    private JsonMessage displayName;
-    private JsonMessage[] lore;
+    private final JsonMessage displayName;
+    private final JsonMessage[] lore;
 
     public ItemDisplay(JsonMessage displayName, JsonMessage[] lore) {
         this.displayName = displayName;

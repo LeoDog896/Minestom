@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public class LoginSuccessPacket implements ServerPacket {
 
-    public UUID uuid;
-    public String username;
+    public final UUID uuid;
+    public final String username;
 
     public LoginSuccessPacket(@NotNull UUID uuid, @NotNull String username) {
         this.uuid = uuid;
