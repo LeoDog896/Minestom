@@ -67,7 +67,6 @@ import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.utils.time.UpdateOption;
 import net.minestom.server.utils.validate.Check;
 import net.minestom.server.world.DimensionType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -844,7 +843,7 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
+    public void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
         ChatMessagePacket chatMessagePacket = new ChatMessagePacket(MinecraftServer.getSerializationManager().serialize(message), type, source.uuid());
         playerConnection.sendPacket(chatMessagePacket);
     }
@@ -953,12 +952,12 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void playSound(net.kyori.adventure.sound.@NonNull Sound sound) {
+    public void playSound(net.kyori.adventure.sound.@NotNull Sound sound) {
         this.playSound(sound, this.position.getX(), this.position.getY(), this.position.getZ());
     }
 
     @Override
-    public void playSound(net.kyori.adventure.sound.@NonNull Sound sound, double x, double y, double z) {
+    public void playSound(net.kyori.adventure.sound.@NotNull Sound sound, double x, double y, double z) {
         Sound minestomSound = AdventureUtils.asSound(sound.name());
 
         if (minestomSound == null) {
@@ -985,7 +984,7 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void stopSound(@NonNull SoundStop stop) {
+    public void stopSound(@NotNull SoundStop stop) {
         StopSoundPacket packet = new StopSoundPacket();
         packet.flags = 0x0;
 
@@ -1047,7 +1046,7 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void sendPlayerListHeaderAndFooter(@NonNull Component header, @NonNull Component footer) {
+    public void sendPlayerListHeaderAndFooter(@NotNull Component header, @NotNull Component footer) {
         PlayerListHeaderAndFooterPacket packet = new PlayerListHeaderAndFooterPacket();
         packet.header = MinecraftServer.getSerializationManager().serialize(header);
         packet.footer = MinecraftServer.getSerializationManager().serialize(footer);
@@ -1123,14 +1122,14 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void showTitle(@NonNull Title title) {
+    public void showTitle(@NotNull Title title) {
         for (TitlePacket titlePacket : TitlePacket.of(title)) {
             playerConnection.sendPacket(titlePacket);
         }
     }
 
     @Override
-    public void sendActionBar(@NonNull Component message) {
+    public void sendActionBar(@NotNull Component message) {
         TitlePacket titlePacket = new TitlePacket(TitlePacket.Action.SET_ACTION_BAR, MinecraftServer.getSerializationManager().serialize(message));
         playerConnection.sendPacket(titlePacket);
     }
@@ -1175,12 +1174,12 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void showBossBar(@NonNull BossBar bar) {
+    public void showBossBar(@NotNull BossBar bar) {
         MinecraftServer.getBossBarManager().addBossBar(this, bar);
     }
 
     @Override
-    public void hideBossBar(@NonNull BossBar bar) {
+    public void hideBossBar(@NotNull BossBar bar) {
         MinecraftServer.getBossBarManager().removeBossBar(this, bar);
     }
 
@@ -1212,7 +1211,7 @@ public class Player extends LivingEntity implements CommandSender {
     }
 
     @Override
-    public void openBook(@NonNull Book book) {
+    public void openBook(@NotNull Book book) {
         // make the book
         ItemStack writtenBook = new ItemStack(Material.WRITTEN_BOOK, (byte) 1);
         writtenBook.setItemMeta(WrittenBookMeta.fromAdventure(book));

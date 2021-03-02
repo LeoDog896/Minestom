@@ -38,7 +38,6 @@ import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.utils.time.UpdateOption;
 import net.minestom.server.utils.validate.Check;
 import net.minestom.server.world.DimensionType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1137,7 +1136,7 @@ public abstract class Instance implements BlockModifier, EventHandler, DataConta
     }
 
     @Override
-    public @NonNull Iterable<? extends Audience> audiences() {
+    public @NotNull Iterable<? extends Audience> audiences() {
         return this.getPlayers();
     }
 }
