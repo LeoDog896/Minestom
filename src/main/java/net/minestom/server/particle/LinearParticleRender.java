@@ -12,12 +12,12 @@ class LinearParticleRenderer extends ParticleRenderer {
     private final int density;
     private final Position from;
     private final Position to;
-    private final ParticleWrapper basePacket;
+    private final SpawnableParticle basePacket;
 
     public LinearParticleRenderer(
             Position from,
             Position to,
-            ParticleWrapper basePacket,
+            SpawnableParticle basePacket,
             int density, int lifespan,
             UpdateOption generationInterval
     ) {

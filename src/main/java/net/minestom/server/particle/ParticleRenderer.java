@@ -46,7 +46,7 @@ public abstract class ParticleRenderer implements Viewable {
     }
 
     /**
-     * Generates all packets per the render cycle. Stored in a list
+     * Generates all packets per the render cycle. Stored in an object array
      *
      * @return The list of built ParticlePackets.
      */
@@ -66,9 +66,7 @@ public abstract class ParticleRenderer implements Viewable {
                 return;
             }
 
-            ParticlePacket[] particles = generatePackets();
-
-            for (ParticlePacket packet : particles) {
+            for (ParticlePacket packet : generatePackets()) {
                 PacketUtils.sendGroupedPacket(getViewers(), packet);
             }
 
