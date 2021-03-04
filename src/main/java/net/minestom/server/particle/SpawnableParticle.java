@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 /**
  * Cloneable particle that also has metadata.
+ *
+ * In its own seperate class as to reduce ParticlePacket overhead.
  */
 public class SpawnableParticle extends ParticlePacket implements PublicCloneable<SpawnableParticle> {
 

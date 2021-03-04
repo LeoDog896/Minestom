@@ -42,7 +42,7 @@ class LinearParticleRenderer extends ParticleRenderer {
 
         for (int i = 0; i < density; i++) {
 
-            ParticlePacket packet = basePacket.clone().getPacket();
+            ParticlePacket packet = basePacket.clone();
 
             packet.x = reusablePosition.getX();
             packet.y = reusablePosition.getY();
