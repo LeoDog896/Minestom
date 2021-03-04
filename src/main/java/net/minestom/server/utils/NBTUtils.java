@@ -26,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 // for lack of a better name
 public final class NBTUtils {
@@ -124,9 +121,10 @@ public final class NBTUtils {
         return item;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static void loadDataIntoItem(@NotNull ItemStack item, @NotNull NBTCompound nbt) {
         if (nbt.containsKey("Damage")) item.setDamage(nbt.getInt("Damage"));
-        if (nbt.containsKey("Unbreakable")) item.setUnbreakable(nbt.getInt("Unbreakable") == 1);
+        if (nbt.containsKey("Unbreakable")) item.setUnbreakable(nbt.getAsByte("Unbreakable") == 1);
         if (nbt.containsKey("HideFlags")) item.setHideFlag(nbt.getInt("HideFlags"));
         if (nbt.containsKey("display")) {
             final NBTCompound display = nbt.getCompound("display");
@@ -159,10 +157,11 @@ public final class NBTUtils {
                     final int[] uuidArray = attributeNBT.getIntArray("UUID");
                     uuid = Utils.intArrayToUuid(uuidArray);
                 }
-                final double value = attributeNBT.getDouble("Amount");
-                final String slot = attributeNBT.getString("Slot");
+
+                final double value = attributeNBT.getAsDouble("Amount");
+                final String slot = attributeNBT.containsKey("Slot") ? attributeNBT.getString("Slot") : "MAINHAND";
                 final String attributeName = attributeNBT.getString("AttributeName");
-                final int operation = attributeNBT.getInt("Operation");
+                final int operation = attributeNBT.getAsInt("Operation");
                 final String name = attributeNBT.getString("Name");
 
                 final Attribute attribute = Attribute.fromKey(attributeName);
@@ -174,10 +173,13 @@ public final class NBTUtils {
                 if (attributeOperation == null) {
                     break;
                 }
-                final AttributeSlot attributeSlot = AttributeSlot.valueOf(slot.toUpperCase());
-                // Wrong attribute slot, stop here
-                if (attributeSlot == null) {
-                    break;
+
+                // Find slot, default to the main hand if the nbt tag is invalid
+                AttributeSlot attributeSlot;
+                try {
+                    attributeSlot = AttributeSlot.valueOf(slot.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    attributeSlot = AttributeSlot.MAINHAND;
                 }
 
                 // Add attribute
@@ -216,6 +218,21 @@ public final class NBTUtils {
                 if (data != null) {
                     item.setData(data);
                 }
+            }
+        }
+
+        //CanPlaceOn
+        {
+            if (nbt.containsKey("CanPlaceOn")) {
+                NBTList<NBTString> canPlaceOn = nbt.getList("CanPlaceOn");
+                canPlaceOn.forEach(x -> item.getCanPlaceOn().add(x.getValue()));
+            }
+        }
+        //CanDestroy
+        {
+            if (nbt.containsKey("CanDestroy")) {
+                NBTList<NBTString> canPlaceOn = nbt.getList("CanDestroy");
+                canPlaceOn.forEach(x -> item.getCanDestroy().add(x.getValue()));
             }
         }
     }
@@ -364,6 +381,26 @@ public final class NBTUtils {
             }
         }
         // End ownership
+
+        //CanDestroy
+        {
+            Set<String> canDestroy = itemStack.getCanDestroy();
+            if (canDestroy.size() > 0) {
+                NBTList<NBTString> list = new NBTList<>(NBTTypes.TAG_String);
+                canDestroy.forEach(x -> list.add(new NBTString(x)));
+                itemNBT.set("CanDestroy", list);
+            }
+        }
+
+        //CanDestroy
+        {
+            Set<String> canPlaceOn = itemStack.getCanPlaceOn();
+            if (canPlaceOn.size() > 0) {
+                NBTList<NBTString> list = new NBTList<>(NBTTypes.TAG_String);
+                canPlaceOn.forEach(x -> list.add(new NBTString(x)));
+                itemNBT.set("CanPlaceOn", list);
+            }
+        }
     }
 
     /**

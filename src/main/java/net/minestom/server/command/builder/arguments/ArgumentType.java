@@ -18,6 +18,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ArgumentType {
 
+    public static ArgumentLiteral Literal(@NotNull String id) {
+        return new ArgumentLiteral(id);
+    }
+
+    public static ArgumentGroup Group(@NotNull String id, @NotNull Argument<?>... arguments) {
+        return new ArgumentGroup(id, arguments);
+    }
+
+    @SafeVarargs
+    public static <T> ArgumentLoop<T> Loop(@NotNull String id, @NotNull Argument<T>... arguments) {
+        return new ArgumentLoop<>(id, arguments);
+    }
+
     public static ArgumentBoolean Boolean(@NotNull String id) {
         return new ArgumentBoolean(id);
     }
@@ -60,6 +73,15 @@ public class ArgumentType {
 
     public static ArgumentDynamicStringArray DynamicStringArray(@NotNull String id) {
         return new ArgumentDynamicStringArray(id);
+    }
+
+    public static ArgumentCommand Command(@NotNull String id) {
+        return new ArgumentCommand(id);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static <E extends Enum> ArgumentEnum<E> Enum(@NotNull String id, @NotNull Class<E> enumClass) {
+        return new ArgumentEnum<>(id, enumClass);
     }
 
     // Minecraft specific arguments
@@ -108,12 +130,16 @@ public class ArgumentType {
         return new ArgumentItemStack(id);
     }
 
-    public static ArgumentNbtCompoundTag NbtCompound(@NotNull String id) {
-        return new ArgumentNbtCompoundTag(id);
+    public static ArgumentComponent Component(@NotNull String id) {
+        return new ArgumentComponent(id);
     }
 
     public static ArgumentNbtTag NBT(@NotNull String id) {
         return new ArgumentNbtTag(id);
+    }
+
+    public static ArgumentNbtCompoundTag NbtCompound(@NotNull String id) {
+        return new ArgumentNbtCompoundTag(id);
     }
 
     public static ArgumentRelativeBlockPosition RelativeBlockPosition(@NotNull String id) {

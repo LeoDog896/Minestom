@@ -18,6 +18,7 @@ import net.minestom.server.network.packet.server.login.SetCompressionPacket;
 import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.cache.CacheablePacket;
 import net.minestom.server.utils.cache.TemporaryCache;
+import net.minestom.server.utils.cache.TimedBuffer;
 import net.minestom.server.utils.validate.Check;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +68,9 @@ public class NettyPlayerConnection extends PlayerConnection {
     @Override
     public void update() {
         // Flush
-        this.channel.flush();
+        if (channel.isActive()) {
+            this.channel.flush();
+        }
         // Network stats
         super.update();
     }
@@ -112,31 +115,41 @@ public class NettyPlayerConnection extends PlayerConnection {
      */
     @Override
     public void sendPacket(@NotNull ServerPacket serverPacket) {
-        if (!isOnline())
+        if (!channel.isActive())
             return;
 
         if (shouldSendPacket(serverPacket)) {
             if (getPlayer() != null) {
                 // Flush happen during #update()
                 if (serverPacket instanceof CacheablePacket && MinecraftServer.hasPacketCaching()) {
-                    CacheablePacket cacheablePacket = (CacheablePacket) serverPacket;
+                    final CacheablePacket cacheablePacket = (CacheablePacket) serverPacket;
                     final UUID identifier = cacheablePacket.getIdentifier();
 
                     if (identifier == null) {
-                        // This packet explicitly said to do not retrieve the cache
+                        // This packet explicitly asks to do not retrieve the cache
                         write(serverPacket);
                     } else {
+                        final long timestamp = cacheablePacket.getTimestamp();
                         // Try to retrieve the cached buffer
-                        TemporaryCache<ByteBuf> temporaryCache = cacheablePacket.getCache();
-                        ByteBuf buffer = temporaryCache.retrieve(identifier, cacheablePacket.getLastUpdateTime());
-                        if (buffer == null) {
-                            // Buffer not found, create and cache it
-                            final long time = System.currentTimeMillis();
-                            buffer = PacketUtils.createFramedPacket(serverPacket, false);
-                            temporaryCache.cacheObject(identifier, buffer, time);
+                        TemporaryCache<TimedBuffer> temporaryCache = cacheablePacket.getCache();
+                        TimedBuffer timedBuffer = temporaryCache.retrieve(identifier);
+
+                        // Update the buffer if non-existent or outdated
+                        final boolean shouldUpdate = timedBuffer == null ||
+                                timestamp > timedBuffer.getTimestamp();
+
+
+                        if (timedBuffer == null) {
+                            // Buffer not found, create it
+                            final ByteBuf buffer = PacketUtils.createFramedPacket(serverPacket, false);
+                            timedBuffer = new TimedBuffer(buffer, timestamp);
                         }
-                        FramedPacket framedPacket = new FramedPacket(buffer);
-                        write(framedPacket);
+
+                        if (shouldUpdate) {
+                            temporaryCache.cache(identifier, timedBuffer);
+                        }
+
+                        write(new FramedPacket(timedBuffer.getBuffer()));
                     }
 
                 } else
@@ -152,7 +165,7 @@ public class NettyPlayerConnection extends PlayerConnection {
 
         if (MinecraftServer.shouldProcessNettyErrors()) {
             return channelFuture.addListener(future -> {
-                if (!future.isSuccess()) {
+                if (!future.isSuccess() && channel.isActive()) {
                     MinecraftServer.getExceptionManager().handleException(future.cause());
                 }
             });
@@ -167,7 +180,7 @@ public class NettyPlayerConnection extends PlayerConnection {
 
         if (MinecraftServer.shouldProcessNettyErrors()) {
             return channelFuture.addListener(future -> {
-                if (!future.isSuccess()) {
+                if (!future.isSuccess() && channel.isActive()) {
                     MinecraftServer.getExceptionManager().handleException(future.cause());
                 }
             });
