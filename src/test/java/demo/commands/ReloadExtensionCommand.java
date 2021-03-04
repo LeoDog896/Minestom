@@ -1,5 +1,6 @@
 package demo.commands;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Arguments;
@@ -44,12 +45,12 @@ public class ReloadExtensionCommand extends Command {
     }
 
     private void usage(CommandSender sender, Arguments arguments) {
-        sender.sendMessage("Usage: /reload <extension name>");
+        sender.sendMessage(Component.text("Usage: /reload <extension name>"));
     }
 
     private void execute(CommandSender sender, Arguments arguments) {
         String name = join(arguments.getStringArray("extensionName"));
-        sender.sendMessage("extensionName = " + name + "....");
+        sender.sendMessage(Component.text("extensionName = " + name + "...."));
 
         ExtensionManager extensionManager = MinecraftServer.getExtensionManager();
         Extension ext = extensionManager.getExtension(name);
@@ -70,12 +71,12 @@ public class ReloadExtensionCommand extends Command {
                 }
             }
         } else {
-            sender.sendMessage("Extension '" + name + "' does not exist.");
+            sender.sendMessage(Component.text("Extension '" + name + "' does not exist."));
         }
     }
 
     private void gameModeCallback(CommandSender sender, ArgumentSyntaxException argumentSyntaxException) {
-        sender.sendMessage("'" + argumentSyntaxException.getInput() + "' is not a valid extension name!");
+        sender.sendMessage(Component.text("'" + argumentSyntaxException.getInput() + "' is not a valid extension name!"));
     }
 
     @Nullable

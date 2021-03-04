@@ -1,5 +1,6 @@
 package demo.commands;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Arguments;
@@ -18,7 +19,7 @@ public class PotionCommand extends Command {
         setCondition(this::condition);
 
         setDefaultExecutor(((sender, args) -> {
-            sender.sendMessage("Usage: /potion [type] [duration (seconds)]");
+            sender.sendMessage(Component.text("Usage: /potion [type] [duration (seconds)]"));
         }));
 
         Argument potionArg = ArgumentType.Potion("potion");
@@ -29,7 +30,7 @@ public class PotionCommand extends Command {
 
     private boolean condition(CommandSender sender, String commandString) {
         if (!sender.isPlayer()) {
-            sender.sendMessage("The command is only available for players");
+            sender.sendMessage(Component.text("The command is only available for players"));
             return false;
         }
         return true;
@@ -40,7 +41,7 @@ public class PotionCommand extends Command {
         final PotionEffect potion = args.getPotionEffect("potion");
         final int duration = args.getInteger("duration");
 
-        player.sendMessage(player.getActiveEffects().toString());
+        player.sendMessage(Component.text(player.getActiveEffects().toString()));
         player.addEffect(new Potion(
                 potion,
                 (byte) 0,

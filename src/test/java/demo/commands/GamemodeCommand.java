@@ -1,5 +1,7 @@
 package demo.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Arguments;
 import net.minestom.server.command.builder.Command;
@@ -38,7 +40,9 @@ public class GamemodeCommand extends Command {
     }
 
     private void usage(CommandSender sender, Arguments arguments) {
-        sender.sendMessage("Usage: /gamemode [player] <gamemode>");
+        sender.sendMessage(Component.text("Usage: /gamemode [player] <gamemode>")
+                .hoverEvent(Component.text("Click to get this command."))
+                .clickEvent(ClickEvent.suggestCommand("/gamemode player gamemode")));
     }
 
     private void executeOnSelf(CommandSender sender, Arguments arguments) {
@@ -48,7 +52,7 @@ public class GamemodeCommand extends Command {
         GameMode mode = GameMode.valueOf(gamemodeName.toUpperCase());
         assert mode != null; // mode is not supposed to be null, because gamemodeName will be valid
         player.setGameMode(mode);
-        player.sendMessage("You are now playing in " + gamemodeName);
+        player.sendMessage(Component.text("You are now playing in " + gamemodeName));
     }
 
     private void executeOnOther(CommandSender sender, Arguments arguments) {
@@ -61,19 +65,19 @@ public class GamemodeCommand extends Command {
         Optional<Player> target = player.getInstance().getPlayers().stream().filter(p -> p.getUsername().equalsIgnoreCase(targetName)).findFirst();
         if (target.isPresent()) {
             target.get().setGameMode(mode);
-            target.get().sendMessage("You are now playing in " + gamemodeName);
+            target.get().sendMessage(Component.text("You are now playing in " + gamemodeName));
         } else {
-            player.sendMessage("'" + targetName + "' is not a valid player name.");
+            player.sendMessage(Component.text("'" + targetName + "' is not a valid player name."));
         }
     }
 
     private void gameModeCallback(CommandSender sender, ArgumentSyntaxException exception) {
-        sender.sendMessage("'" + exception.getInput() + "' is not a valid gamemode!");
+        sender.sendMessage(Component.text("'" + exception.getInput() + "' is not a valid gamemode!"));
     }
 
     private boolean isAllowed(CommandSender sender, String commandString) {
         if (!sender.isPlayer()) {
-            sender.sendMessage("The command is only available for player");
+            sender.sendMessage(Component.text("The command is only available for player"));
             return false;
         }
         return true;

@@ -1,5 +1,6 @@
 package demo.commands;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Arguments;
 import net.minestom.server.command.builder.Command;
@@ -25,18 +26,18 @@ public class ShootCommand extends Command {
 
     private boolean condition(CommandSender sender, String commandString) {
         if (!sender.isPlayer()) {
-            sender.sendMessage("The command is only available for player");
+            sender.sendMessage(Component.text("The command is only available for player"));
             return false;
         }
         return true;
     }
 
     private void defaultExecutor(CommandSender sender, Arguments args) {
-        sender.sendMessage("Correct usage: shoot [default/spectral/colored]");
+        sender.sendMessage(Component.text("Correct usage: shoot [default/spectral/colored]"));
     }
 
     private void onTypeError(CommandSender sender, ArgumentSyntaxException exception) {
-        sender.sendMessage("SYNTAX ERROR: '" + exception.getInput() + "' should be replaced by 'default', 'spectral' or 'colored'");
+        sender.sendMessage(Component.text("SYNTAX ERROR: '" + exception.getInput() + "' should be replaced by 'default', 'spectral' or 'colored'"));
     }
 
     private void onShootCommand(CommandSender sender, Arguments args) {

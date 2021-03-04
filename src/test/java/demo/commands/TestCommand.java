@@ -1,5 +1,6 @@
 package demo.commands;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Arguments;
 import net.minestom.server.command.builder.Command;
@@ -30,6 +31,6 @@ public class TestCommand extends Command {
     }
 
     private void usage(CommandSender sender, Arguments arguments) {
-        sender.sendMessage("Incorrect usage");
+        sender.sendMessage(Component.text("Incorrect usage"));
     }
 }
