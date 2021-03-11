@@ -14,6 +14,8 @@ import net.minestom.server.adventure.AdventurePacketConvertor;
 import net.minestom.server.adventure.Localizable;
 import net.minestom.server.attribute.AttributeInstance;
 import net.minestom.server.attribute.Attributes;
+import net.minestom.server.attribute.Attribute;
+import net.minestom.server.attribute.AttributeInstance;
 import net.minestom.server.chat.ChatParser;
 import net.minestom.server.chat.ColoredText;
 import net.minestom.server.chat.JsonMessage;
@@ -85,44 +87,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Player extends LivingEntity implements CommandSender, Localizable {
 
-    /**
-     * @see #getPlayerSynchronizationGroup()
-     */
-    private static volatile int playerSynchronizationGroup = 75;
-
-    /**
-     * For the number of viewers that a player has, the position synchronization packet will be sent
-     * every 1 tick + (viewers/{@code playerSynchronizationGroup}).
-     * (eg with a value of 100, having 300 viewers means sending the synchronization packet every 3 ticks)
-     * <p>
-     * Used to prevent sending exponentially more packets and therefore reduce network load.
-     *
-     * @return the viewers count which would result in a 1 tick delay
-     */
-    public static int getPlayerSynchronizationGroup() {
-        return playerSynchronizationGroup;
-    }
-
-    /**
-     * Changes the viewers count resulting in an additional delay of 1 tick for the position synchronization.
-     *
-     * @param playerSynchronizationGroup the new synchronization group size
-     * @see #getPlayerSynchronizationGroup()
-     */
-    public static void setPlayerSynchronizationGroup(int playerSynchronizationGroup) {
-        Player.playerSynchronizationGroup = playerSynchronizationGroup;
-    }
-
-    /**
-     * Gets the number of tick between each position synchronization.
-     *
-     * @param viewersCount the player viewers count
-     * @return the number of tick between each position synchronization.
-     */
-    public static int getPlayerSynchronizationTickDelay(int viewersCount) {
-        return viewersCount / playerSynchronizationGroup + 1;
-    }
-
     private long lastKeepAlive;
     private boolean answerKeepAlive;
 
@@ -138,7 +102,9 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
     private DimensionType dimensionType;
     private GameMode gameMode;
     protected final Set<Chunk> viewableChunks = new CopyOnWriteArraySet<>();
+
     private final AtomicInteger teleportId = new AtomicInteger();
+    private int receivedTeleportId;
 
     private final Queue<ClientPlayPacket> packets = Queues.newConcurrentLinkedQueue();
     private final boolean levelFlat;
@@ -224,7 +190,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         this.gameMode = GameMode.SURVIVAL;
         this.dimensionType = DimensionType.OVERWORLD; // Default dimension
         this.levelFlat = true;
-        getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1f);
+        getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.1f);
 
         // FakePlayer init its connection there
         playerConnectionInit();
@@ -446,9 +412,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         callEvent(PlayerTickEvent.class, playerTickEvent);
 
         // Multiplayer sync
-        final boolean syncCooldown = CooldownUtils.hasCooldown(time, lastPlayerSynchronizationTime,
-                TimeUnit.TICK, getPlayerSynchronizationTickDelay(viewers.size()));
-        if (!viewers.isEmpty() && !syncCooldown) {
+        if (!viewers.isEmpty()) {
             this.lastPlayerSynchronizationTime = time;
 
             final boolean positionChanged = position.getX() != lastPlayerSyncX ||
@@ -682,11 +646,10 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
             final boolean firstSpawn = this.instance == null; // TODO: Handle player reconnections, must be false in that case too
 
             // Send the new dimension if player isn't in any instance or if the dimension is different
-            {
-                final DimensionType instanceDimensionType = instance.getDimensionType();
-                if (dimensionType != instanceDimensionType) {
-                    sendDimension(instanceDimensionType);
-                }
+            final DimensionType instanceDimensionType = instance.getDimensionType();
+            final boolean dimensionChange = dimensionType != instanceDimensionType;
+            if (dimensionChange) {
+                sendDimension(instanceDimensionType);
             }
 
             // Load all the required chunks
@@ -705,7 +668,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
 
             final ChunkCallback endCallback = chunk -> {
                 // This is the last chunk to be loaded , spawn player
-                spawnPlayer(instance, spawnPosition, firstSpawn, true);
+                spawnPlayer(instance, spawnPosition, firstSpawn, true, dimensionChange);
             };
 
             // Chunk 0;0 always needs to be loaded
@@ -716,7 +679,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         } else {
             // The player already has the good version of all the chunks.
             // We just need to refresh his entity viewing list and add him to the instance
-            spawnPlayer(instance, spawnPosition, false, false);
+            spawnPlayer(instance, spawnPosition, false, false, false);
         }
     }
 
@@ -743,7 +706,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
      * @param firstSpawn    true if this is the player first spawn
      */
     private void spawnPlayer(@NotNull Instance instance, @NotNull Position spawnPosition,
-                             boolean firstSpawn, boolean updateChunks) {
+                             boolean firstSpawn, boolean updateChunks, boolean dimensionChange) {
         // Clear previous instance elements
         if (!firstSpawn) {
             this.viewableChunks.forEach(chunk -> chunk.removeViewer(this));
@@ -757,10 +720,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
             teleport(spawnPosition);
         } else if (updateChunks) {
             // Send newly visible chunks to player once spawned in the instance
-            final Chunk chunk = getChunk();
-            if (chunk != null) {
-                refreshVisibleChunks(chunk);
-            }
+            refreshVisibleChunks();
+        }
+
+        if (dimensionChange || firstSpawn) {
+            updatePlayerPosition(); // So the player doesn't get stuck
+            this.inventory.update();
         }
 
         PlayerSpawnEvent spawnEvent = new PlayerSpawnEvent(this, instance, firstSpawn);
@@ -1741,6 +1706,13 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         }
     }
 
+    public void refreshVisibleChunks() {
+        final Chunk chunk = getChunk();
+        if (chunk != null) {
+            refreshVisibleChunks(chunk);
+        }
+    }
+
     /**
      * Refreshes the list of entities that the player should be able to see based on {@link MinecraftServer#getEntityViewDistance()}
      * and {@link Entity#isAutoViewable()}.
@@ -2136,6 +2108,18 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         playerConnection.sendPacket(updateViewPositionPacket);
     }
 
+    public int getLastSentTeleportId() {
+        return teleportId.get();
+    }
+
+    public int getLastReceivedTeleportId() {
+        return receivedTeleportId;
+    }
+
+    public void refreshReceivedTeleportId(int receivedTeleportId) {
+        this.receivedTeleportId = receivedTeleportId;
+    }
+
     /**
      * Used for synchronization purpose, mainly for teleportation
      */
@@ -2517,11 +2501,15 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
      * based on which one is the lowest
      */
     public int getChunkRange() {
-        final int serverRange = MinecraftServer.getChunkViewDistance();
         final int playerRange = getSettings().viewDistance;
-        if (playerRange == 0) {
-            return serverRange; // Didn't receive settings packet yet (is the case on login)
+        if (playerRange < 1) {
+            // Didn't receive settings packet yet (is the case on login)
+            // In this case we send the smallest amount of chunks possible
+            // Will be updated in PlayerSettings#refresh.
+            // Non-compliant clients might also be stuck with this view
+            return 1;
         } else {
+            final int serverRange = MinecraftServer.getChunkViewDistance();
             return Math.min(playerRange, serverRange);
         }
     }
@@ -2796,7 +2784,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
         public void refresh(String locale, byte viewDistance, ChatMode chatMode, boolean chatColors,
                             byte displayedSkinParts, MainHand mainHand) {
 
-            final boolean viewDistanceChanged = !firstRefresh && this.viewDistance != viewDistance;
+            final boolean viewDistanceChanged = this.viewDistance != viewDistance;
 
             this.locale = locale;
             this.viewDistance = viewDistance;
@@ -2811,10 +2799,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable {
 
             // Client changed his view distance in the settings
             if (viewDistanceChanged) {
-                final Chunk playerChunk = getChunk();
-                if (playerChunk != null) {
-                    refreshVisibleChunks(playerChunk);
-                }
+                refreshVisibleChunks();
             }
         }
 

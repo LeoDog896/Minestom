@@ -50,6 +50,11 @@ public class ChatClickEvent {
     }
 
     @NotNull
+    public static ChatClickEvent copyToClipboard(@NotNull String text) {
+        return new ChatClickEvent("copy_to_clipboard", text);
+    }
+
+    @NotNull
     protected String getAction() {
         return action;
     }

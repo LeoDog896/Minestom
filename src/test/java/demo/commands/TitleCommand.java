@@ -33,7 +33,7 @@ public class TitleCommand extends Command {
         }
 
         Player player = source.asPlayer();
-        String titleContent = args.getString("content");
+        String titleContent = args.get("content");
 
         player.showTitle(Title.title(Component.text(titleContent), Component.empty(), Title.DEFAULT_TIMES));
     }
